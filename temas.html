@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tema Claro y Oscuro - Versión Mejorada</title>
+    <style>
+      :root {
+        --light-bg: #f0f0f0;
+        --light-text: #333;
+        --dark-bg: #222;
+        --dark-text: #f0f0f0;
+        --accent-color: #4caf50;
+        --switch-light: #ffd700;
+        --switch-dark: #3498db;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        transition: background-color 0.5s, color 0.5s;
+      }
+
+      .container {
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        font-size: 2.5rem;
+        transition: color 0.3s ease;
+      }
+
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--switch-light);
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: var(--switch-dark);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+
+      .theme-icon {
+        font-size: 24px;
+        margin: 0 10px;
+        transition: opacity 0.3s ease;
+      }
+
+      body.light-theme {
+        background-color: var(--light-bg);
+        color: var(--light-text);
+      }
+
+      body.dark-theme {
+        background-color: var(--dark-bg);
+        color: var(--dark-text);
+      }
+
+      .theme-status {
+        margin-top: 20px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .theme-status.visible {
+        opacity: 1;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .pulse {
+        animation: pulse 0.5s ease-in-out;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Cambia el Tema</h1>
+      <div>
+        <span class="theme-icon" id="lightIcon">☀️</span>
+        <label class="switch">
+          <input type="checkbox" id="themeToggle" />
+          <span class="slider"></span>
+        </label>
+        <span class="theme-icon" id="darkIcon">🌙</span>
+      </div>
+      <div class="theme-status" id="themeStatus"></div>
+    </div>
+
+    <script>
+      const themeToggle = document.getElementById("themeToggle");
+      const body = document.body;
+      const container = document.querySelector(".container");
+      const lightIcon = document.getElementById("lightIcon");
+      const darkIcon = document.getElementById("darkIcon");
+      const themeStatus = document.getElementById("themeStatus");
+
+      function setTheme(isDark) {
+        if (isDark) {
+          body.classList.remove("light-theme");
+          body.classList.add("dark-theme");
+          themeToggle.checked = true;
+          lightIcon.style.opacity = "0.5";
+          darkIcon.style.opacity = "1";
+          themeStatus.textContent = "Modo Oscuro Activado";
+        } else {
+          body.classList.remove("dark-theme");
+          body.classList.add("light-theme");
+          themeToggle.checked = false;
+          lightIcon.style.opacity = "1";
+          darkIcon.style.opacity = "0.5";
+          themeStatus.textContent = "Modo Claro Activado";
+        }
+
+        container.classList.add("pulse");
+        themeStatus.classList.add("visible");
+
+        setTimeout(() => {
+          container.classList.remove("pulse");
+          themeStatus.classList.remove("visible");
+        }, 2000);
+      }
+
+      themeToggle.addEventListener("change", () => {
+        setTheme(themeToggle.checked);
+        localStorage.setItem("theme", themeToggle.checked ? "dark" : "light");
+      });
+
+      const savedTheme = localStorage.getItem("theme");
+      setTheme(savedTheme === "dark");
+
+      if (!savedTheme) {
+        setTheme(false);
+      }
+    </script>
+  </body>
+</html>
